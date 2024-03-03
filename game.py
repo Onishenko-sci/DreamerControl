@@ -58,7 +58,7 @@ class Robot():
 py.init()
 
 # Set up the screen
-width, height = 1024, 768
+width, height = 1024, 766
 screen = py.display.set_mode((width, height))
 py.display.set_caption("Move the Robot")
 
@@ -79,7 +79,7 @@ while True:
             py.quit()
             sys.exit()
 
-    # Get the keys currently held down
+    # Get the keys currently held down``
     keys = py.key.get_pressed()
 
     # Continuous movement

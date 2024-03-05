@@ -31,5 +31,6 @@ undistorted_image = undistort_image(orig, K, D)
     
 cv2.imshow("Original Image", orig)
 cv2.imshow("Undistorted Image", undistorted_image)
+cv2.imwrite("capture.jpg", undistorted_image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

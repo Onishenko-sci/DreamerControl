@@ -147,6 +147,8 @@ class Game:
         if Distance < self.button.radius:
             return(True)
         return(False)
+    
+    
 
     def do_event(self, keys):
         if keys[K_LEFT]:

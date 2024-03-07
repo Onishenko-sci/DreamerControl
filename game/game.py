@@ -3,6 +3,8 @@ import sys
 
 game = Game()
 game.reset_game()
+
+
 # Main game loop
 while True:
     for event in pygame.event.get():

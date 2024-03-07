@@ -5,11 +5,12 @@ import pymunk
 from pymunk.pygame_util import *
 from pymunk import Vec2d
 import math
+import random
 
 pygame.init()
 pymunk.pygame_util.positive_y_is_up = False
 
-width, height = 1024, 768
+width, height = 640, 480
 FPS = 60
 background = pygame.image.load('./sprites/capture.jpg')
 clock = pygame.time.Clock()
@@ -21,9 +22,11 @@ space.gravity = 0, 0
 
 draw_options = pymunk.pygame_util.DrawOptions(screen)
 
+
+
 class Object:
     def __init__(self, pos):
-        self.body = pymunk.Body(1, 100)
+        self.body = pymunk.Body(mass=1, moment=100)
         self.body.position = pos
         space.add(self.body)
         Game.objects.append(self)
@@ -42,7 +45,7 @@ class Object:
 
 
 class Button(Object):
-    radius = 40
+    radius = 20
     img = pygame.image.load('./sprites/Button.png').convert_alpha()
     img = pygame.transform.scale(img, (radius*2, radius*2))
     def __init__(self, pos):
@@ -59,9 +62,27 @@ class Rectangle(Object):
         shape.friction = 0.1
         space.add(shape)
 
+class Circle(Object):
+    def __init__(self, pos):
+        super().__init__(pos)
+        size = self.img.get_size()
+        shape = pymunk.Circle(self.body, radius = size[0]/2)
+        shape.elasticity = 0
+        shape.friction = 0.1
+        shape.collision_type = 2
+        space.add(shape)
+
+class Obstacle(Circle):
+    pic_size = (32, 32)
+    img = pygame.image.load('./sprites/obstacle.png').convert_alpha()
+    img = pygame.transform.scale(img, pic_size)
+
+    def __init__(self, pos):
+        super().__init__(pos)
+
 
 class Cube(Rectangle):
-    pic_size = (64, 64)
+    pic_size = (32, 32)
     img = pygame.image.load('./sprites/cube.png').convert_alpha()
     img = pygame.transform.scale(img, pic_size)
 
@@ -70,7 +91,9 @@ class Cube(Rectangle):
 
 
 class Robot(Object):
+    pic_size = (48, 48)
     img = pygame.image.load('./sprites/robot.png').convert_alpha()
+    img = pygame.transform.scale(img, pic_size)
 
     def __init__(self, pos):
         super().__init__(pos)
@@ -79,9 +102,10 @@ class Robot(Object):
         #Init shape
         size = self.img.get_size()
         print(f"Robot size {size}")
-        shape = pymunk.Circle(self.body, size[0]/2)
+        shape = pymunk.Circle(self.body, size[0]/2.5)
         shape.elasticity = 0
         shape.friction = 0.1
+        shape.collision_type = 1
         space.add(shape)
         
     def forward(self):
@@ -109,17 +133,26 @@ class Robot(Object):
 
 class Game:
     objects = []
+    obstacles = []
     score = 0
     debug = True
 
     def __init__(self):
         self.score = 0
+        space.add_collision_handler(1, 2).begin = self.robot_hit_wall
+
+    def robot_hit_wall(self,arbiter, space, _):
+        self.reset_game()
+        return True
 
     def set_ground(self):
-        shape = pymunk.Segment(space.static_body, (0, 10), (1200, 10), 4)
-        shape.friction = 1
-        shape.collision_type = 3
-        space.add(shape)
+        top = pymunk.Segment(space.static_body, (80, 122), (640, 122), 4)
+        left = pymunk.Segment(space.static_body, (80, 122), (80, 384), 4)
+        bottom = pymunk.Segment(space.static_body, (80, 384), (640, 395), 4)
+        walls = [top,left,bottom]
+        for wall in walls:
+            wall.collision_type = 2
+            space.add(wall)
 
     def remove_objects(self):
         """Remove all Objectects from space."""
@@ -174,6 +207,9 @@ class Game:
         self.remove_objects()
         self.set_ground()
 
-        self.button = Button((800,600))
-        self.robot = Robot((500, 500))
+        #Playable zone is 80-640 122-384
+        self.button = Button((400,300))
+        self.robot = Robot((200, 200))
         self.cube = Cube((300,300))
+        for i in range(3):
+            self.obstacles.append(Obstacle((random.randint(100,600),random.randint(150,340))))

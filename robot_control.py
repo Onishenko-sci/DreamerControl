@@ -22,7 +22,7 @@ key_to_endpoint = {
 }
 
 picture_url = "http://192.168.1.185/capture"
-robot_url = "http://192.168.1.145"
+robot_url = "http://192.168.1.124"
 
 def get_capture():
     # Get image from camera
@@ -44,7 +44,6 @@ def get_capture():
     #Translate it into pygame surfce
     capture_rgb = cv2.cvtColor(undistorted_capture, cv2.COLOR_BGR2RGB)
     capture_pygame = pygame.image.frombuffer(capture_rgb.flatten(), (w, h), 'RGB')
-
     return capture_pygame
 
 def push_button(endpoint):
@@ -58,7 +57,6 @@ def push_button(endpoint):
             print("Failed to push button")
     except Exception as e:
         print("An error occurred:", e)
-
 
 
 def main():

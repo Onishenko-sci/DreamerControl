@@ -19,4 +19,4 @@ while True:
     game.draw()
     pygame.display.flip()
     # Control the frame rate
-    clock.tick(FPS)
+    clock.tick(4)

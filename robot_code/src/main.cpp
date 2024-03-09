@@ -2,7 +2,7 @@
 #include <WiFi.h>
 #include "html.h"
 
-class motor 
+class motor
 {
 private:
   int speed;
@@ -95,7 +95,6 @@ motor big(GPIO_NUM_26, GPIO_NUM_25, GPIO_NUM_33);
 // вводим имя и пароль точки доступа
 const char *ssid = "magick";
 const char *password = "isintheair";
-uint8_t a = 0;
 
 int ledBrightness = 0; // Initial LED brightness
 
@@ -106,8 +105,8 @@ void setup()
   delay(500);
   Serial.begin(115200);
 
-  small.set_speed(254);
-  big.set_speed(240);
+  small.stop();
+  big.stop();
 
   // Connect to Wi-Fi
   Serial.println();
@@ -115,6 +114,7 @@ void setup()
   Serial.println(ssid);
 
   WiFi.begin(ssid, password);
+  pinMode(LED_BUILTIN, OUTPUT);
 
   while (WiFi.status() != WL_CONNECTED)
   {
@@ -135,10 +135,10 @@ void setup()
 void loop()
 {
   WiFiClient client = server.available(); // Check if a client has connected
-  // client.setTimeout(2);
 
   if (client)
   {
+    digitalWrite(LED_BUILTIN, HIGH);
     Serial.println("New client");
     String currentLine = ""; // Make a String to hold incoming data from the client
 
@@ -151,24 +151,30 @@ void loop()
 
         if (c == '\n')
         { // If the byte is a newline character
-          // Check if the client's request is to turn the LED on
+          // Check if the client's request is to go forward
           if (currentLine.startsWith("GET /forward"))
           {
+            big.stop();
+            small.stop();
+            delay(300);
+
             big.set_speed(254);
             small.set_speed(240);
 
             big.forward();
-            delay(20);
             small.forward();
           }
-          // Check if the client's request is to turn the LED off
+          // Check if the client's request is to go backward
           else if (currentLine.startsWith("GET /backward"))
           {
+            big.stop();
+            small.stop();
+            delay(300);
+
             big.set_speed(254);
             small.set_speed(240);
 
             small.back();
-            delay(20);
             big.back();
           }
           else if (currentLine.startsWith("GET /stop"))
@@ -178,38 +184,46 @@ void loop()
           }
           else if (currentLine.startsWith("GET /left"))
           {
+            big.stop();
+            small.stop();
+            delay(300);
+
             big.set_speed(255);
             small.set_speed(255);
 
             big.forward();
             small.back();
 
-            delay(50);
+            delay(200);
             big.set_speed(180);
             small.set_speed(140);
           }
           else if (currentLine.startsWith("GET /right"))
           {
+            big.stop();
+            small.stop();
+            delay(300);
+
             big.set_speed(255);
             small.set_speed(255);
 
             big.back();
             small.forward();
 
-            delay(100);
+            delay(200);
             big.set_speed(180);
             small.set_speed(140);
           }
           // Check if the client's request is to set LED brightness
-          else if (currentLine.startsWith("GET /brightness1"))
+          else if (currentLine.startsWith("GET /LeftMotorSpeed"))
           {
-            int brightnessValue = currentLine.substring(currentLine.indexOf('=') + 1).toInt();
-            small.set_speed(brightnessValue);
+            int SpeedValue = currentLine.substring(currentLine.indexOf('=') + 1).toInt();
+            small.set_speed(SpeedValue);
           }
-          else if (currentLine.startsWith("GET /brightness2"))
+          else if (currentLine.startsWith("GET /RightMotorSpeed"))
           {
-            int brightnessValue = currentLine.substring(currentLine.indexOf('=') + 1).toInt();
-            big.set_speed(brightnessValue);
+            int SpeedValue = currentLine.substring(currentLine.indexOf('=') + 1).toInt();
+            big.set_speed(SpeedValue);
           }
           // Clear the currentLine variable
           currentLine = "";
@@ -231,11 +245,7 @@ void loop()
 
     // Close the connection
     client.stop();
+    digitalWrite(LED_BUILTIN, LOW);
     Serial.println("Client disconnected");
   }
-
-  if (a == 120)
-    Serial.println("Blink:D");
-  a++;
-
 }

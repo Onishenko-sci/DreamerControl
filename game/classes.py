@@ -51,7 +51,14 @@ class Button(Object):
     def __init__(self, pos):
         super().__init__(pos) 
         self.center = pos+ Vec2d(self.radius/2,self.radius/2)
-         
+
+class  Laser(Object):
+    radius = 10
+    img = pygame.image.load('./sprites/laser.jpg').convert_alpha()
+    def __init__(self, pos):
+        super().__init__(pos) 
+        self.center = pos+ Vec2d(2,2)
+
 
 class Rectangle(Object):
     def __init__(self, pos):
@@ -73,8 +80,8 @@ class Circle(Object):
         space.add(shape)
 
 class Obstacle(Circle):
-    pic_size = (32, 32)
-    img = pygame.image.load('./sprites/obstacle.png').convert_alpha()
+    pic_size = (20, 20)
+    img = pygame.image.load('./sprites/obstacle0.png').convert_alpha()
     img = pygame.transform.scale(img, pic_size)
 
     def __init__(self, pos):
@@ -97,8 +104,8 @@ class Robot(Object):
 
     def __init__(self, pos):
         super().__init__(pos)
-        self.speed = 100
-        self.rotation_speed = math.pi/180
+        self.speed = 1000
+        self.rotation_speed = math.pi/18
         #Init shape
         size = self.img.get_size()
         print(f"Robot size {size}")
@@ -136,6 +143,8 @@ class Game:
     obstacles = []
     score = 0
     debug = True
+    cube = 0
+    laser = 0
 
     def __init__(self):
         self.score = 0
@@ -164,8 +173,12 @@ class Game:
 
     def draw(self):
         """Draw pymunk Objectects on pygame screen."""
-        if self.win_condition():
-            self.reset_game()
+        if self.cube:
+            if self.cube_touch_button():
+                self.reset_game()
+        if self.laser:
+            if self.robot_touch_laser():
+                self.reset_game()
 
         screen.blit(background, (0, 0))
         if self.debug:
@@ -174,15 +187,19 @@ class Game:
             obj.draw()
         space.step(0.02)
 
-    def win_condition(self):
-        dV = self.cube.body.position-self.button.center    
-        Distance = math.sqrt(dV[0]**2+dV[1]**2)
-        if Distance < self.button.radius:
+    def cube_touch_button(self):
+        dPos = self.cube.body.position-self.button.center    
+        if abs(dPos) < self.button.radius:
+            return(True)
+        return(False)
+    
+    def robot_touch_laser(self):
+        dPos = self.robot.body.position-self.laser.center    
+        if abs(dPos) < self.laser.radius:
             return(True)
         return(False)
     
     
-
     def do_event(self, keys):
         if keys[K_LEFT]:
             self.robot.rotate_left()
@@ -202,14 +219,29 @@ class Game:
         if keys[K_r]:
             self.reset_game()
 
+
+    def random_pos(self):
+        #Playable zone is x = 80-640; y = 122-384.
+        in_zone_pos = lambda : (random.randint(100, 620),random.randint(140, 340))
+
+        far_enought = False
+        while(not far_enought):
+            pos = in_zone_pos()
+            far_enought = True
+            for obj in self.objects:
+                if abs(pos - obj.body.position) < 80:
+                    far_enought = False
+        return pos
+
     def reset_game(self):
         """Set player level."""
         self.remove_objects()
         self.set_ground()
 
-        #Playable zone is 80-640 122-384
-        self.button = Button((400,300))
-        self.robot = Robot((200, 200))
-        self.cube = Cube((300,300))
-        for i in range(3):
-            self.obstacles.append(Obstacle((random.randint(100,600),random.randint(150,340))))
+        #self.button = Button((400,300))
+        #self.cube = Cube((300,300))
+
+        self.robot = Robot(self.random_pos())
+        self.laser = Laser(self.random_pos())
+        for i in range(8):
+            self.obstacles.append(Obstacle(self.random_pos()))

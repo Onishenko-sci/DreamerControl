@@ -70,7 +70,7 @@ def main():
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key in key_to_endpoint:
-                    #push_button(key_to_endpoint[event.key])
+                    push_button(key_to_endpoint[event.key])
                     a=5
         
 

@@ -35,8 +35,8 @@ class Object:
         angle = self.body.angle
         img = pygame.transform.rotate(self.img, -1*math.degrees(angle))
 
-        self.body.velocity = self.body.velocity*0.80
-        self.body.angular_velocity = self.body.angular_velocity*0.80
+    #    self.body.velocity = self.body.velocity*0.80
+    #    self.body.angular_velocity = self.body.angular_velocity*0.80
 
         pos = to_pygame(self.body.position, screen)
         rect = img.get_rect()
@@ -105,7 +105,7 @@ class Robot(Object):
     def __init__(self, pos):
         super().__init__(pos)
         self.speed = 1000
-        self.rotation_speed = math.pi/18
+        self.rotation_speed = math.pi*10
         #Init shape
         size = self.img.get_size()
         print(f"Robot size {size}")
@@ -128,10 +128,10 @@ class Robot(Object):
         self.body.velocity = (x_vel, y_vel)
 
     def rotate_right(self):
-        self.body.angle += self.rotation_speed  # Turn right
+        self.body.angular_velocity = self.rotation_speed  # Turn right
 
     def rotate_left(self):
-        self.body.angle -= self.rotation_speed  # Turn left
+        self.body.angular_velocity = -self.rotation_speed  # Turn left
 
     def stop(self):
         self.body.velocity = (0, 0)
@@ -200,24 +200,35 @@ class Game:
         return(False)
     
     
-    def do_event(self, keys):
-        if keys[K_LEFT]:
-            self.robot.rotate_left()
-        elif keys[K_RIGHT]:
-            self.robot.rotate_right()
-    
-        if keys[K_UP]:
-            self.robot.forward()   
-        elif keys[K_DOWN]:
-            self.robot.backward()
-        else:
-            self.robot.stop()
+    def do_event(self, event):
 
-        if keys[K_d]:
+        if event == K_d:
             self.debug = not self.debug
-        
-        if keys[K_r]:
+            return
+            
+        if event == K_r:
             self.reset_game()
+            return
+
+        if event == K_SPACE:
+            self.robot.stop()
+            return 
+            
+        if event == K_UP:
+            self.robot.stop()
+            self.robot.forward()
+            return
+            
+        if event == K_RIGHT:
+            self.robot.stop()
+            self.robot.rotate_right()
+            return
+            
+        if event == K_LEFT:
+            self.robot.stop()
+            self.robot.rotate_left()
+            return
+
 
 
     def random_pos(self):

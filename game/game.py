@@ -14,14 +14,23 @@ while True:
             sys.exit()
         
         if event.type == pygame.KEYDOWN:
-            time.sleep(300/1000)
+            #time.sleep(300/1000)
             game.do_event(event.key)
 
-    # Recieve game inputs
-    keys = pygame.key.get_pressed()
-    game.do_event(keys)
+
     # Drow objects on screen
     game.draw()
+    space.step(0.5)
+    # Win
+    if game.robot_touch_laser():
+        game.reset_game()
+        print("Win!")
+    # Lose
+    if game.lose:
+        game.reset_game()
+        print("Lose...")
+        
+
     pygame.display.flip()
     # Control the frame rate
     clock.tick(4)

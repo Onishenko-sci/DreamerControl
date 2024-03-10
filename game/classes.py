@@ -9,9 +9,7 @@ import random
 
 pygame.init()
 pymunk.pygame_util.positive_y_is_up = False
-
 width, height = 640, 480
-FPS = 60
 background = pygame.image.load('./sprites/capture.jpg')
 clock = pygame.time.Clock()
 
@@ -53,7 +51,7 @@ class Button(Object):
         self.center = pos+ Vec2d(self.radius/2,self.radius/2)
 
 class  Laser(Object):
-    radius = 10
+    radius = 40
     img = pygame.image.load('./sprites/laser.jpg').convert_alpha()
     def __init__(self, pos):
         super().__init__(pos) 
@@ -104,8 +102,8 @@ class Robot(Object):
 
     def __init__(self, pos):
         super().__init__(pos)
-        self.speed = 1000
-        self.rotation_speed = math.pi*10
+        self.speed = 100
+        self.rotation_speed = math.pi/4
         #Init shape
         size = self.img.get_size()
         print(f"Robot size {size}")
@@ -142,16 +140,17 @@ class Game:
     objects = []
     obstacles = []
     score = 0
-    debug = True
+    debug = False
     cube = 0
     laser = 0
+    lose = False
 
     def __init__(self):
         self.score = 0
         space.add_collision_handler(1, 2).begin = self.robot_hit_wall
 
     def robot_hit_wall(self,arbiter, space, _):
-        self.reset_game()
+        self.lose = True
         return True
 
     def set_ground(self):
@@ -173,19 +172,19 @@ class Game:
 
     def draw(self):
         """Draw pymunk Objectects on pygame screen."""
-        if self.cube:
-            if self.cube_touch_button():
-                self.reset_game()
-        if self.laser:
-            if self.robot_touch_laser():
-                self.reset_game()
+       # if self.cube:
+       #     if self.cube_touch_button():
+       #         self.reset_game()
+       # if self.laser:
+       #     if self.robot_touch_laser():
+       #         self.reset_game()
 
         screen.blit(background, (0, 0))
         if self.debug:
             space.debug_draw(draw_options)
         for obj in self.objects:
             obj.draw()
-        space.step(0.02)
+        
 
     def cube_touch_button(self):
         dPos = self.cube.body.position-self.button.center    
@@ -229,8 +228,6 @@ class Game:
             self.robot.rotate_left()
             return
 
-
-
     def random_pos(self):
         #Playable zone is x = 80-640; y = 122-384.
         in_zone_pos = lambda : (random.randint(100, 620),random.randint(140, 340))
@@ -246,6 +243,7 @@ class Game:
 
     def reset_game(self):
         """Set player level."""
+        self.lose = False
         self.remove_objects()
         self.set_ground()
 

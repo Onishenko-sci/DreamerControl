@@ -108,6 +108,9 @@ void setup()
   small.stop();
   big.stop();
 
+  small.set_speed(100);
+  big.set_speed(100);
+
   // Connect to Wi-Fi
   Serial.println();
   Serial.print("Connecting to ");
@@ -156,10 +159,10 @@ void loop()
           {
             big.stop();
             small.stop();
-            delay(300);
+            delay(200);
 
-            big.set_speed(254);
-            small.set_speed(240);
+            //big.set_speed(100);
+            //small.set_speed(100);
 
             big.forward();
             small.forward();
@@ -169,10 +172,10 @@ void loop()
           {
             big.stop();
             small.stop();
-            delay(300);
+            delay(200);
 
-            big.set_speed(254);
-            small.set_speed(240);
+            //big.set_speed(100);
+            //small.set_speed(100);
 
             small.back();
             big.back();
@@ -188,15 +191,12 @@ void loop()
             small.stop();
             delay(300);
 
-            big.set_speed(255);
-            small.set_speed(255);
+            big.set_speed(90);
+            small.set_speed(90);
 
             big.forward();
             small.back();
-
-            delay(200);
-            big.set_speed(180);
-            small.set_speed(140);
+ 
           }
           else if (currentLine.startsWith("GET /right"))
           {
@@ -204,15 +204,12 @@ void loop()
             small.stop();
             delay(300);
 
-            big.set_speed(255);
-            small.set_speed(255);
+            big.set_speed(90);
+            small.set_speed(90);
 
             big.back();
             small.forward();
 
-            delay(200);
-            big.set_speed(180);
-            small.set_speed(140);
           }
           // Check if the client's request is to set LED brightness
           else if (currentLine.startsWith("GET /LeftMotorSpeed"))

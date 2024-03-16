@@ -157,7 +157,8 @@ class Game:
         top = pymunk.Segment(space.static_body, (80, 122), (640, 122), 4)
         left = pymunk.Segment(space.static_body, (80, 122), (80, 384), 4)
         bottom = pymunk.Segment(space.static_body, (80, 384), (640, 395), 4)
-        walls = [top,left,bottom]
+        right = pymunk.Segment(space.static_body, (640, 122), (640, 395), 4)
+        walls = [top,left,bottom,right]
         for wall in walls:
             wall.collision_type = 2
             space.add(wall)

@@ -20,7 +20,7 @@ while True:
 
     # Drow objects on screen
     game.draw()
-    space.step(0.5)
+    space.step(0.1)
     # Win
     if game.robot_touch_laser():
         game.reset_game()

@@ -78,7 +78,7 @@ class Circle(Object):
         space.add(shape)
 
 class Obstacle(Circle):
-    pic_size = (20, 20)
+    pic_size = (24, 19)
     img = pygame.image.load('./sprites/obstacle0.png').convert_alpha()
     img = pygame.transform.scale(img, pic_size)
 
@@ -96,7 +96,7 @@ class Cube(Rectangle):
 
 
 class Robot(Object):
-    pic_size = (48, 48)
+    pic_size = (43, 35)
     img = pygame.image.load('./sprites/robot.png').convert_alpha()
     img = pygame.transform.scale(img, pic_size)
 
@@ -251,7 +251,11 @@ class Game:
         #self.button = Button((400,300))
         #self.cube = Cube((300,300))
 
-        self.robot = Robot(self.random_pos())
-        self.laser = Laser(self.random_pos())
-        for i in range(8):
-            self.obstacles.append(Obstacle(self.random_pos()))
+        self.robot = Robot((320,280))
+        self.laser = Laser((320,200))
+        self.obstacles.append(Obstacle((320,240)))
+
+        #self.robot = Robot(self.random_pos())
+        #self.laser = Laser(self.random_pos())
+        #for i in range(1):
+        #    self.obstacles.append(Obstacle(self.random_pos()))

@@ -13,11 +13,11 @@ key_to_action = {
 }
 
 class room_env(gym.Env):
-    def __init__(self):
-        self.game = Game()
+    def __init__(self, goal):
+        self.game = Game(level=goal, obstacles_n=0)
         self.action_space = spaces.Discrete(4)
         self.observation_space = spaces.Box(
-            low=0, high=255, shape=(640, 480, 3), dtype=np.int8)
+            low=0, high=255, shape=(640, 480, 3), dtype=np.int16)
         self.terminated = False
         self.truncated = False
         self.render_mode = None
@@ -42,7 +42,7 @@ class room_env(gym.Env):
             self.terminated = True
 
         # Win condition
-        if self.game.robot_touch_laser():
+        if self.game.win_condition():
             self.reward = 1000
             self.terminated = True
 

@@ -2,7 +2,7 @@ from classes import *
 import sys
 import time
 
-game = Game()
+game = Game('laser', 0)
 game.reset_game()
 
 
@@ -22,7 +22,7 @@ while True:
     game.draw()
     space.step(0.1)
     # Win
-    if game.robot_touch_laser():
+    if game.win_condition():
         game.reset_game()
         print("Win!")
     # Lose

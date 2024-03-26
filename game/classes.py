@@ -51,7 +51,7 @@ class Button(Object):
         self.center = pos+ Vec2d(self.radius/2,self.radius/2)
 
 class  Laser(Object):
-    radius = 40
+    radius = 20
     img = pygame.image.load('./sprites/laser.jpg').convert_alpha()
     def __init__(self, pos):
         super().__init__(pos) 
@@ -78,7 +78,7 @@ class Circle(Object):
         space.add(shape)
 
 class Obstacle(Circle):
-    pic_size = (24, 19)
+    pic_size = (24, 24)
     img = pygame.image.load('./sprites/obstacle0.png').convert_alpha()
     img = pygame.transform.scale(img, pic_size)
 
@@ -136,6 +136,7 @@ class Robot(Object):
         self.body.angular_velocity = 0
 
 
+
 class Game:
     objects = []
     obstacles = []
@@ -144,9 +145,17 @@ class Game:
     cube = 0
     laser = 0
     lose = False
+    level = 'laser'
+    n_obstacles = 0
 
-    def __init__(self):
+    def __init__(self, level, obstacles_n):
         self.score = 0
+        self.n_obstacles = obstacles_n
+        if level == 'laser' or level == 'cube':
+            self.level = level
+        else:
+            print("Wrong level name!")
+
         space.add_collision_handler(1, 2).begin = self.robot_hit_wall
 
     def robot_hit_wall(self,arbiter, space, _):
@@ -199,6 +208,14 @@ class Game:
             return(True)
         return(False)
     
+    def win_condition(self):
+        if self.level == 'laser' and self.robot_touch_laser():
+            return True
+        
+        if self.level == 'cube' and self.cube_touch_button():
+            return True
+        
+        return False
     
     def do_event(self, event):
 
@@ -248,14 +265,21 @@ class Game:
         self.remove_objects()
         self.set_ground()
 
-        #self.button = Button((400,300))
-        #self.cube = Cube((300,300))
+        if self.level == 'laser':
+            self.robot = Robot(self.random_pos())
+            self.laser = Laser(self.random_pos())
 
-        self.robot = Robot((320,280))
-        self.laser = Laser((320,200))
-        self.obstacles.append(Obstacle((320,240)))
+        if self.level == 'debug':
+            self.robot = Robot((320,280))
+            self.laser = Laser((320,200))
+            self.obstacles.append(Obstacle((320,240)))
+            self.debug = True
 
-        #self.robot = Robot(self.random_pos())
-        #self.laser = Laser(self.random_pos())
-        #for i in range(1):
-        #    self.obstacles.append(Obstacle(self.random_pos()))
+        if self.level == 'cube':
+            self.robot = Robot(self.random_pos())
+            self.button = Button(self.random_pos())
+            self.cube = Cube(self.random_pos())
+
+
+        for i in range(self.n_obstacles):
+            self.obstacles.append(Obstacle(self.random_pos()))

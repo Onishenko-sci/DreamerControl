@@ -106,7 +106,7 @@ class Robot(Object):
         self.rotation_speed = math.pi/4
         #Init shape
         size = self.img.get_size()
-        print(f"Robot size {size}")
+        #print(f"Robot size {size}")
         shape = pymunk.Circle(self.body, size[0]/2.5)
         shape.elasticity = 0
         shape.friction = 0.1

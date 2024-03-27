@@ -13,8 +13,8 @@ key_to_action = {
 }
 
 class room_env(gym.Env):
-    def __init__(self, goal):
-        self.game = Game(level=goal, obstacles_n=0)
+    def __init__(self, goal, obstacles_n):
+        self.game = Game(level=goal, obstacles_n=obstacles_n)
         self.action_space = spaces.Discrete(4)
         self.observation_space = spaces.Box(
             low=0, high=255, shape=(640, 480, 3), dtype=np.int16)
@@ -26,7 +26,7 @@ class room_env(gym.Env):
     def step(self, action):
         # Make step
         self.game.do_event(key_to_action[action])
-        space.step(0.5)
+        space.step(0.1)
         # Create observation
         self.game.draw()
         self.observation = np.transpose(
@@ -35,6 +35,10 @@ class room_env(gym.Env):
         # Punishment for wasting time
         self.timestep_passed += 1
         self.reward = -self.timestep_passed // self.valid_timestep
+
+        if self.timestep_passed > self.valid_timestep*100:
+            self.reward = -100
+            self.terminated = True
 
         # Lose condition
         if self.game.lose:

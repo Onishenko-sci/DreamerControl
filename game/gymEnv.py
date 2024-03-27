@@ -73,6 +73,8 @@ class room_env(gym.Env):
         if self.render_mode == 'human':
             self.render()
 
+        self.info = [self.game.robot.body.position, self.game.robot.body.angle, self.game.laser.center]
+
         return self.observation, self.info
 
     def render(self, render_mode='human'):

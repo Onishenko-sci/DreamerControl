@@ -248,7 +248,7 @@ class Game:
 
     def random_pos(self):
         #Playable zone is x = 80-640; y = 122-384.
-        in_zone_pos = lambda : (random.randint(100, 620),random.randint(140, 340))
+        in_zone_pos = lambda : (random.randint(120, 600),random.randint(160, 320))
 
         far_enought = False
         while(not far_enought):
@@ -280,6 +280,7 @@ class Game:
             self.button = Button(self.random_pos())
             self.cube = Cube(self.random_pos())
 
+        self.robot.body.angle = random.randint(0,360)
 
         for i in range(self.n_obstacles):
             self.obstacles.append(Obstacle(self.random_pos()))

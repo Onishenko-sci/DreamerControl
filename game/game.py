@@ -2,7 +2,7 @@ from classes import *
 import sys
 import time
 
-game = Game('laser', 0)
+game = Game('laser', 3)
 game.reset_game()
 
 
@@ -20,7 +20,7 @@ while True:
 
     # Drow objects on screen
     game.draw()
-    space.step(0.1)
+    space.step(0.02)
     # Win
     if game.win_condition():
         game.reset_game()

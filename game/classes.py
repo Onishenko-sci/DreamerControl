@@ -9,7 +9,7 @@ import random
 
 pygame.init()
 pymunk.pygame_util.positive_y_is_up = False
-width, height = 640, 480
+width, height = 100, 100
 background = pygame.image.load('./sprites/capture.jpg')
 clock = pygame.time.Clock()
 
@@ -51,7 +51,7 @@ class Button(Object):
         self.center = pos+ Vec2d(self.radius/2,self.radius/2)
 
 class  Laser(Object):
-    radius = 20
+    radius = 5
     img = pygame.image.load('./sprites/laser.jpg').convert_alpha()
     def __init__(self, pos):
         super().__init__(pos) 
@@ -78,8 +78,8 @@ class Circle(Object):
         space.add(shape)
 
 class Obstacle(Circle):
-    pic_size = (24, 24)
-    img = pygame.image.load('./sprites/obstacle0.png').convert_alpha()
+    pic_size = (4, 4)
+    img = pygame.image.load('./sprites/obstacle100.png').convert_alpha()
     img = pygame.transform.scale(img, pic_size)
 
     def __init__(self, pos):
@@ -96,14 +96,14 @@ class Cube(Rectangle):
 
 
 class Robot(Object):
-    pic_size = (43, 35)
-    img = pygame.image.load('./sprites/robot.png').convert_alpha()
+    pic_size = (11, 8)
+    img = pygame.image.load('./sprites/robot100.png').convert_alpha()
     img = pygame.transform.scale(img, pic_size)
 
     def __init__(self, pos):
         super().__init__(pos)
         self.speed = 100
-        self.rotation_speed = math.pi/4
+        self.rotation_speed = math.pi*5
         #Init shape
         size = self.img.get_size()
         #print(f"Robot size {size}")
@@ -163,10 +163,10 @@ class Game:
         return True
 
     def set_ground(self):
-        top = pymunk.Segment(space.static_body, (80, 122), (640, 122), 4)
-        left = pymunk.Segment(space.static_body, (80, 122), (80, 384), 4)
-        bottom = pymunk.Segment(space.static_body, (80, 384), (640, 395), 4)
-        right = pymunk.Segment(space.static_body, (640, 122), (640, 395), 4)
+        top = pymunk.Segment(space.static_body, (5, 19), (100, 19), 1)
+        left = pymunk.Segment(space.static_body, (5, 19), (2, 93), 1)
+        bottom = pymunk.Segment(space.static_body, (2, 93), (100, 100), 3)
+        right = pymunk.Segment(space.static_body, (100, 19), (100, 100), 3)
         walls = [top,left,bottom,right]
         for wall in walls:
             wall.collision_type = 2
@@ -248,14 +248,14 @@ class Game:
 
     def random_pos(self):
         #Playable zone is x = 80-640; y = 122-384.
-        in_zone_pos = lambda : (random.randint(120, 600),random.randint(160, 320))
+        in_zone_pos = lambda : (random.randint(15, 90),random.randint(30, 80))
 
         far_enought = False
         while(not far_enought):
             pos = in_zone_pos()
             far_enought = True
             for obj in self.objects:
-                if abs(pos - obj.body.position) < 80:
+                if abs(pos - obj.body.position) < 30:
                     far_enought = False
         return pos
 

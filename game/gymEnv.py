@@ -17,7 +17,7 @@ class room_env(gym.Env):
         self.game = Game(level=goal, obstacles_n=obstacles_n)
         self.action_space = spaces.Discrete(4)
         self.observation_space = spaces.Box(
-            low=0, high=255, shape=(640, 480, 3), dtype=np.int16)
+            low=0, high=255, shape=(640, 480, 3), dtype=np.uint8)
         self.terminated = False
         self.truncated = False
         self.render_mode = None
@@ -31,6 +31,7 @@ class room_env(gym.Env):
         self.game.draw()
         self.observation = np.transpose(
             np.array(pygame.surfarray.pixels3d(screen)), axes=(0, 1, 2))
+        
 
         # Punishment for wasting time
         self.timestep_passed += 1

@@ -233,7 +233,7 @@ class RoomDQN():
         return (torch.from_numpy(state).permute(2,0,1).type(torch.float32)/255).unsqueeze(dim=0)
 
 
-    # Run the FrozeLake environment with the learned policy
+    # Run the environment with the learned policy
     def test(self, episodes):
         # Create FrozenLake instance
         #env = gym.make('FrozenLake-v1', map_name="4x4", is_slippery=is_slippery, render_mode='human')

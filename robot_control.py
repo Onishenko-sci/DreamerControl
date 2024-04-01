@@ -9,7 +9,7 @@ from io import BytesIO
 # Set up Pygame
 pygame.init()
 
-screen_size = (240,240)
+screen_size = (1000,1000)
 # Set up the screen
 screen = pygame.display.set_mode(screen_size)
 
@@ -56,7 +56,7 @@ def get_capture():
     undistorted_capture = cv2.undistort(gray, K, D, None, new_camera_matrix)
     #Crop [112,47] [205,129]
     undistorted_capture = undistorted_capture[30:130,109:209]
-    print(undistorted_capture.shape)
+    #print(undistorted_capture.shape)
 
     undistorted_capture = cv2.resize(undistorted_capture, screen_size)
 
@@ -91,7 +91,7 @@ def main():
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key in key_to_endpoint:
-                    #push_button(key_to_endpoint[event.key])
+                    push_button(key_to_endpoint[event.key])
                     a=5
         
         #Render background
@@ -104,7 +104,7 @@ def main():
         fps_text = font.render(f"FPS is:  {fps}", True, (255, 0, 0))
         screen.blit(fps_text, (10, 10))
         pygame.display.flip()
-        clock.tick(50)
+        #clock.tick(50)
 
     
     pygame.quit()

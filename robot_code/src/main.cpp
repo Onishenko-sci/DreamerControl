@@ -89,8 +89,8 @@ motor::~motor()
 {
 }
 
-motor small(GPIO_NUM_14, GPIO_NUM_27, GPIO_NUM_12);
-motor big(GPIO_NUM_26, GPIO_NUM_25, GPIO_NUM_33);
+motor small(GPIO_NUM_14, GPIO_NUM_27, GPIO_NUM_12); // Правый
+motor big(GPIO_NUM_26, GPIO_NUM_25, GPIO_NUM_33);   // Левый
 
 // вводим имя и пароль точки доступа
 const char *ssid = "magick";
@@ -161,11 +161,15 @@ void loop()
             small.stop();
             delay(200);
 
-            //big.set_speed(100);
-            //small.set_speed(100);
+            big.set_speed(100);
+            small.set_speed(97);
 
             big.forward();
             small.forward();
+            delay(300);
+
+            big.stop();
+            small.stop();
           }
           // Check if the client's request is to go backward
           else if (currentLine.startsWith("GET /backward"))
@@ -174,11 +178,15 @@ void loop()
             small.stop();
             delay(200);
 
-            //big.set_speed(100);
-            //small.set_speed(100);
+            // big.set_speed(100);
+            // small.set_speed(100);
 
             small.back();
             big.back();
+            delay(300);
+
+            big.stop();
+            small.stop();
           }
           else if (currentLine.startsWith("GET /stop"))
           {
@@ -194,9 +202,13 @@ void loop()
             big.set_speed(90);
             small.set_speed(90);
 
-            big.forward();
-            small.back();
- 
+            big.back();
+            small.forward();
+
+            delay(150);
+
+            big.stop();
+            small.stop();
           }
           else if (currentLine.startsWith("GET /right"))
           {
@@ -207,9 +219,13 @@ void loop()
             big.set_speed(90);
             small.set_speed(90);
 
-            big.back();
-            small.forward();
+            big.forward();
+            small.back();
 
+            delay(150);
+
+            big.stop();
+            small.stop();
           }
           // Check if the client's request is to set LED brightness
           else if (currentLine.startsWith("GET /LeftMotorSpeed"))

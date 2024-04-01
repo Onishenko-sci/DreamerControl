@@ -43,7 +43,7 @@ class Object:
 
 
 class Button(Object):
-    radius = 20
+    radius = 6
     img = pygame.image.load('./sprites/Button.png').convert_alpha()
     img = pygame.transform.scale(img, (radius*2, radius*2))
     def __init__(self, pos):
@@ -87,7 +87,7 @@ class Obstacle(Circle):
 
 
 class Cube(Rectangle):
-    pic_size = (32, 32)
+    pic_size = (4, 4)
     img = pygame.image.load('./sprites/cube.png').convert_alpha()
     img = pygame.transform.scale(img, pic_size)
 
@@ -96,14 +96,15 @@ class Cube(Rectangle):
 
 
 class Robot(Object):
-    pic_size = (11, 8)
+    pic_size = (12, 8)
     img = pygame.image.load('./sprites/robot100.png').convert_alpha()
     img = pygame.transform.scale(img, pic_size)
 
     def __init__(self, pos):
         super().__init__(pos)
-        self.speed = 100
-        self.rotation_speed = math.pi*5
+        self.speed = 4
+        self.rotation_speed_right = 2*math.pi/15
+        self.rotation_speed_left = 2*math.pi/16.5
         #Init shape
         size = self.img.get_size()
         #print(f"Robot size {size}")
@@ -126,10 +127,10 @@ class Robot(Object):
         self.body.velocity = (x_vel, y_vel)
 
     def rotate_right(self):
-        self.body.angular_velocity = self.rotation_speed  # Turn right
+        self.body.angular_velocity = self.rotation_speed_right  # Turn right
 
     def rotate_left(self):
-        self.body.angular_velocity = -self.rotation_speed  # Turn left
+        self.body.angular_velocity = -self.rotation_speed_left  # Turn left
 
     def stop(self):
         self.body.velocity = (0, 0)
@@ -163,8 +164,8 @@ class Game:
         return True
 
     def set_ground(self):
-        top = pymunk.Segment(space.static_body, (5, 19), (100, 19), 1)
-        left = pymunk.Segment(space.static_body, (5, 19), (2, 93), 1)
+        top = pymunk.Segment(space.static_body, (5, 16), (100, 16), 3)
+        left = pymunk.Segment(space.static_body, (2, 19), (0, 93), 3)
         bottom = pymunk.Segment(space.static_body, (2, 93), (100, 100), 3)
         right = pymunk.Segment(space.static_body, (100, 19), (100, 100), 3)
         walls = [top,left,bottom,right]
@@ -182,13 +183,6 @@ class Game:
 
     def draw(self):
         """Draw pymunk Objectects on pygame screen."""
-       # if self.cube:
-       #     if self.cube_touch_button():
-       #         self.reset_game()
-       # if self.laser:
-       #     if self.robot_touch_laser():
-       #         self.reset_game()
-
         screen.blit(background, (0, 0))
         if self.debug:
             space.debug_draw(draw_options)
@@ -251,11 +245,17 @@ class Game:
         in_zone_pos = lambda : (random.randint(15, 90),random.randint(30, 80))
 
         far_enought = False
+        i=0
         while(not far_enought):
+            i+=1
+            if i > 10000:
+                print('Can\'t place all objects')
+                break
+
             pos = in_zone_pos()
             far_enought = True
             for obj in self.objects:
-                if abs(pos - obj.body.position) < 30:
+                if abs(pos - obj.body.position) < 10:
                     far_enought = False
         return pos
 
@@ -280,7 +280,7 @@ class Game:
             self.button = Button(self.random_pos())
             self.cube = Cube(self.random_pos())
 
-        self.robot.body.angle = random.randint(0,360)
+        self.robot.body.angle = random.random()*math.pi*2
 
         for i in range(self.n_obstacles):
             self.obstacles.append(Obstacle(self.random_pos()))

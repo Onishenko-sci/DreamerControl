@@ -20,7 +20,12 @@ while True:
 
     # Drow objects on screen
     game.draw()
-    space.step(0.02)
+    space.step(1)
+
+    robot_angle = int(360*game.robot.body.angle/(2*math.pi))
+    if robot_angle > 360: robot_angle= robot_angle-360
+    if robot_angle < 0: robot_angle= robot_angle+360
+    print(robot_angle)
     # Win
     if game.win_condition():
         game.reset_game()

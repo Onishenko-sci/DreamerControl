@@ -43,9 +43,19 @@ class room_env(gym.Env):
 
         self.observation = (cadr[:,:,0])[:,:,np.newaxis]
 
+        #self.timestep_passed += 1
+        #self.reward = -self.timestep_passed // self.valid_timestep
+
+
         # Punishment for wasting time
-        self.timestep_passed += 1
-        self.reward = -self.timestep_passed // self.valid_timestep
+        self.dist = abs(self.game.robot.body.position-self.game.laser.center)
+        if self.dist > self.prev_dist:
+            self.reward = -5
+        elif self.dist < self.prev_dist:
+            self.reward = 10
+        else:
+            self.reward = -4
+        self.prev_dist = self.dist
 
         # Lose condition
         if self.game.lose:
@@ -58,7 +68,7 @@ class room_env(gym.Env):
             self.terminated = True
 
         if self.render_mode == 'human':
-            print('Action ', action)
+            #print('Action ', action)
             print('Reward: ', self.reward)
             self.render()
 
@@ -103,7 +113,7 @@ class room_env(gym.Env):
 
     def render(self):
         pygame.display.flip()
-        clock.tick(10)
+        clock.tick(30)
 
 
     def close(self):

@@ -7,12 +7,12 @@ from pymunk import Vec2d
 import math
 import random
 
-pygame.init()
 pymunk.pygame_util.positive_y_is_up = False
 width, height = 100, 100
 background = pygame.image.load('./sprites/capture.jpg')
 clock = pygame.time.Clock()
 
+pygame.init()
 pygame.display.set_mode((width, height))
 screen = pygame.display.get_surface()
 space = pymunk.Space()

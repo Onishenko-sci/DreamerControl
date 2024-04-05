@@ -9,7 +9,7 @@ import random
 
 pymunk.pygame_util.positive_y_is_up = False
 width, height = 100, 100
-background = pygame.image.load('./sprites/capture.jpg')
+background = pygame.image.load('./sprites/black.png')
 clock = pygame.time.Clock()
 
 pygame.init()
@@ -51,7 +51,7 @@ class Button(Object):
         self.center = pos+ Vec2d(self.radius/2,self.radius/2)
 
 class  Laser(Object):
-    radius = 5
+    radius = 8
     img = pygame.image.load('./sprites/laser.jpg').convert_alpha()
     def __init__(self, pos):
         super().__init__(pos) 
@@ -96,7 +96,7 @@ class Cube(Rectangle):
 
 
 class Robot(Object):
-    pic_size = (12, 8)
+    pic_size = (24, 8)
     img = pygame.image.load('./sprites/robot100.png').convert_alpha()
     img = pygame.transform.scale(img, pic_size)
 

@@ -2,7 +2,7 @@ from classes import *
 import sys
 import time
 
-game = Game('laser', 3)
+game = Game('laser', 0)
 game.reset_game()
 
 
